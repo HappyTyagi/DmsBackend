@@ -120,7 +120,7 @@ public class AuthController {
         String otp = otpService.generateOtp(email);
 
         // Send OTP via email
-        emailService.sendOtp(email, otp);
+        emailService.sendOtp(email, otp,employee);
 
         String message = "OTP sent to email for roles: " + roles;
 

@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless JWT usage
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS with a configuration source
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/verifyOtp", "/register/newRegister", "/register/save").permitAll() // Public endpoints including registration
+                        .requestMatchers("/","/auth/login", "/auth/verifyOtp", "/register/newRegister", "/register/save").permitAll() // Public endpoints including registration
                         .requestMatchers("/api/change-password", "/api/send-otp").permitAll() // Allow unauthenticated access to change password and send OTP
                         .requestMatchers("/api/upload/**").permitAll() // Allow file uploads without authentication
                         .requestMatchers("/error").permitAll()// Allow unauthenticated access to /error
