@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -37,7 +38,7 @@ public class DocumentDetailsServiceImpl implements DocumentDetailsService {
         String year = String.valueOf(LocalDate.now().getYear());
         String month = String.format("%02d", LocalDate.now().getMonthValue());
 
-        // Construct base directory using forward slashes
+        // Construct base directory
         String baseDir = "D:/Dheeraj_Codes/Backend/Java/Projects/dms/DocumentServer"
                 + "/" + year + "/" + month + "/" + category;
 
@@ -48,18 +49,32 @@ public class DocumentDetailsServiceImpl implements DocumentDetailsService {
             throw new RuntimeException("Failed to create directory: " + baseDir);
         }
 
+        // Allowed MIME types (optional, for validation)
+        List<String> allowedMimeTypes = Arrays.asList(
+                "application/pdf", // PDF
+                "application/msword", // .doc
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+                "application/vnd.ms-excel", // .xls
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+                "image/jpeg", // .jpg, .jpeg
+                "image/png"  // .png
+        );
+
         // Iterate through each file and upload it
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
-                if (!file.getContentType().equalsIgnoreCase("application/pdf")) {
-                    throw new RuntimeException("Only PDF files are allowed. Invalid file: " + file.getOriginalFilename());
+                String contentType = file.getContentType();
+
+                // Check if the file type is allowed
+                if (contentType != null && !allowedMimeTypes.contains(contentType)) {
+                    throw new RuntimeException("Unsupported file type: " + file.getOriginalFilename());
                 }
 
                 try {
                     // Sanitize and rename the file to avoid collisions
                     String sanitizedFileName = System.currentTimeMillis() + "_"
                             + file.getOriginalFilename().replaceAll("[^a-zA-Z0-9.]", "_");
-                    String filePath = baseDir + "/" + sanitizedFileName; // Use forward slash
+                    String filePath = baseDir + "/" + sanitizedFileName;
                     File serverFile = new File(filePath);
 
                     // Save file to disk

@@ -4,6 +4,7 @@ import com.dmsBackend.entity.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
@@ -317,15 +318,16 @@ public class DocumentController {
     }
 
     @GetMapping("/{year}/{month}/{category}/{fileName}")
-    public ResponseEntity<Resource> downloadFileAsPdf(
+    public ResponseEntity<Resource> downloadFile(
             @PathVariable String year,
             @PathVariable String month,
             @PathVariable String category,
             @PathVariable String fileName) {
 
         try {
-            // Construct the file path using forward slashes
-            String filePath = String.format("D:/Dheeraj_Codes/Backend/Java/Projects/dms/DocumentServer/%s/%s/%s/%s",
+            // Construct the file path
+            String filePath = String.format(
+                    "D:/Dheeraj_Codes/Backend/Java/Projects/dms/DocumentServer/%s/%s/%s/%s",
                     year, month, category, fileName);
 
             // Ensure the file path is valid
@@ -333,29 +335,31 @@ public class DocumentController {
             Resource resource = new UrlResource(path.toUri());
 
             if (resource.exists() && resource.isReadable()) {
-                // Check if the file is a PDF by its extension or MIME type
-                if (fileName.toLowerCase().endsWith(".pdf")) {
-                    // Return the file as a PDF resource
-                    return ResponseEntity.ok()
-                            .contentType(MediaType.APPLICATION_PDF)
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                            .body(resource);
-                } else {
-                    // If the file is not a PDF, return as a generic binary stream
-                    return ResponseEntity.ok()
-                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                            .body(resource);
+                // Determine the MIME type
+                String mimeType = Files.probeContentType(path);
+
+                if (mimeType == null) {
+                    // Fallback to generic binary stream if MIME type cannot be determined
+                    mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
                 }
+
+                // Return the file as a resource
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(mimeType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
             } else {
                 throw new RuntimeException("File not found or not readable: " + fileName);
             }
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Error retrieving file", e);
+            throw new RuntimeException("Error retrieving file: " + fileName, e);
+        } catch (IOException e) {
+            throw new RuntimeException("Error determining MIME type for file: " + fileName, e);
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error occurred while downloading the file", e);
+            throw new RuntimeException("Unexpected error occurred while downloading the file: " + fileName, e);
         }
     }
+
     // You can add more endpoints for retrieving DocumentDetails if needed
 
 
