@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/branchmaster")
-//@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class BranchMasterController {
 
     @Autowired

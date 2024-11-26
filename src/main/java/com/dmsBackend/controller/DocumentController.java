@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://happytyagi.github.io/DmsFrontend/")
 @RestController
 @RequestMapping("/api/documents")
 public class DocumentController {
