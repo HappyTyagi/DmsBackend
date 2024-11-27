@@ -458,14 +458,26 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
     }
 
     @Override
-    public List<DocumentHeader> searchDocuments(String fileNo, String title, String subject, String version, String category) {
-        return documentHeaderRepository.searchDocuments(fileNo, title, subject, version, category);
+    public List<DocumentHeader> searchDocuments(String fileNo, String title, String subject, String version, Integer categoryMaster, Integer branch, Integer department) {
+        return documentHeaderRepository.searchDocuments(
+                fileNo,
+                title,
+                subject,
+                version,
+                categoryMaster,
+                branch,
+                department
+        );
     }
+
+
 
     @Override
     public List<DocumentHeader> getPendingDocumentsByDepartment(Integer departmentId) {
         return documentHeaderRepository.findPendingByDepartment(departmentId);
     }
+
+
 //    @Override
 //    public List<DocumentHeader> getPendingDocumentsForAllBranches() {
 //        return documentHeaderRepository.findPendingDocumentsForAllBranches();

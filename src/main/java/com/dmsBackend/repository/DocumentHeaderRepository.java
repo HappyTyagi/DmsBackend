@@ -33,7 +33,6 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     );
 
 
-
     // Count documents by approval status
     long countByApprovalStatus(DocApprovalStatus approvalStatus);
 
@@ -42,7 +41,6 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
 
     // Count total documents for a specific employee
     long countByEmployeeId(Integer employeeId);
-
 
 
     // Custom queries to count approved/rejected documents by employee who approved/rejected
@@ -81,9 +79,10 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
 
 
     // Find documents by admin's ID and approval status
-   // List<DocumentHeader> findByEmployeeByIdAndApprovalStatus(Integer employeeId, DocApprovalStatus approvalStatus);
+    // List<DocumentHeader> findByEmployeeByIdAndApprovalStatus(Integer employeeId, DocApprovalStatus approvalStatus);
 
     Long countByEmployee_BranchId(Integer branch);
+
     Long countByEmployee_BranchIdAndApprovalStatus(Integer branch, DocApprovalStatus approvalStatus);
 
     @Query("SELECT d FROM DocumentHeader d WHERE d.employee.department = :department AND d.approvalStatus = :approvalStatus")
@@ -100,20 +99,32 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     /**
      * Custom query to search for documents based on various criteria.
      *
-     * @param fileNo   The file number to search for.
-     * @param title    The title to search for.
-     * @param subject  The subject to search for.
-     * @param version  The version to search for.
-     * @param category The category name to search for.
+     * @param fileNo         The file number to search for.
+     * @param title          The title to search for.
+     * @param subject        The subject to search for.
+     * @param version        The version to search for.
+     * @param categoryMaster The category ID to search for.
+     * @param branch         The branch ID to search for.
+     * @param department     The department ID to search for.
      * @return A list of DocumentHeader entities matching the criteria.
      */
     @Query("SELECT d FROM DocumentHeader d " +
-            "WHERE (:fileNo IS NULL OR d.fileNo LIKE %:fileNo%) " +
-            "AND (:title IS NULL OR d.title LIKE %:title%) " +
-            "AND (:subject IS NULL OR d.subject LIKE %:subject%) " +
-            "AND (:version IS NULL OR d.version LIKE %:version%) " +
-            "AND (:category IS NULL OR d.categoryMaster.name LIKE %:category%)")
-    List<DocumentHeader> searchDocuments(String fileNo, String title, String subject, String version, String category);
+            "WHERE (:fileNo IS NULL OR LOWER(d.fileNo) LIKE LOWER(CONCAT('%', :fileNo, '%'))) " +
+            "AND (:title IS NULL OR LOWER(d.title) LIKE LOWER(CONCAT('%', :title, '%'))) " +
+            "AND (:subject IS NULL OR LOWER(d.subject) LIKE LOWER(CONCAT('%', :subject, '%'))) " +
+            "AND (:version IS NULL OR LOWER(d.version) LIKE LOWER(CONCAT('%', :version, '%'))) " +
+            "AND (:categoryMaster IS NULL OR d.categoryMaster.id = :categoryMaster) " +
+            "AND (:branch IS NULL OR d.employee.branch.id = :branch) " +
+            "AND (:department IS NULL OR d.employee.department.id = :department)")
+    List<DocumentHeader> searchDocuments(
+            @Param("fileNo") String fileNo,
+            @Param("title") String title,
+            @Param("subject") String subject,
+            @Param("version") String version,
+            @Param("categoryMaster") Integer categoryMaster,
+            @Param("branch") Integer branch,
+            @Param("department") Integer department
+    );
 
     @Query("SELECT dh FROM DocumentHeader dh WHERE dh.employee.department.id = :departmentId AND dh.approvalStatus = 'PENDING'")
     List<DocumentHeader> findPendingByDepartment(@Param("departmentId") Integer departmentId);

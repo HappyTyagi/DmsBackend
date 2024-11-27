@@ -32,10 +32,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import java.nio.file.Path;
@@ -362,14 +359,12 @@ public class DocumentController {
 
     // You can add more endpoints for retrieving DocumentDetails if needed
 
-
     @GetMapping("/pendingByBranch/{branchId}/{departmentId}")
     public ResponseEntity<List<DocumentHeader>> getPendingDocumentsByBranch(
             @PathVariable Integer branchId,
-            @PathVariable Integer departmentId,
+            @PathVariable(required = false) Integer departmentId,  // Allow departmentId to be optional
             @AuthenticationPrincipal UserDetails userDetails) {
-
-        List<DocumentHeader> pendingDocuments;
+        List<DocumentHeader> pendingDocuments = new ArrayList<>(); // Default to empty list
 
         // Check if the user has the 'admin' role
         if (userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
@@ -380,14 +375,39 @@ public class DocumentController {
             pendingDocuments = documentHeaderService.getPendingDocumentsByBranch(branchId);
         } else if (userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("DEPARTMENT ADMIN"))) {
             // Department admins can only view pending documents for their department within their branch
-            pendingDocuments = documentHeaderService.getPendingDocumentsByDepartment(departmentId);
+            if (departmentId != null) {
+                pendingDocuments = documentHeaderService.getPendingDocumentsByDepartment(departmentId);
+            } else {
+                // Handle case where departmentId is null, depending on your use case
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.emptyList());
+            }
         } else {
             // Other users are unauthorized to view pending documents
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
         }
 
         return ResponseEntity.ok(pendingDocuments);
     }
+
+
+    @GetMapping("/pendingByBranch/{branchId}")
+    public ResponseEntity<List<DocumentHeader>> getPendingDocumentsByBranchOnly(
+            @PathVariable Integer branchId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        List<DocumentHeader> pendingDocuments = new ArrayList<>();
+
+        if (userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
+            pendingDocuments = documentHeaderService.getAllPendingDocuments();
+        } else if (userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("BRANCH ADMIN"))) {
+            pendingDocuments = documentHeaderService.getPendingDocumentsByBranch(branchId);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(pendingDocuments);
+    }
+
 
 
     @GetMapping("/approvedByBranch/{employeeId}")
@@ -405,7 +425,10 @@ public class DocumentController {
                 searchCriteria.getTitle(),
                 searchCriteria.getSubject(),
                 searchCriteria.getVersion(),
-                searchCriteria.getCategory());
+                searchCriteria.getCategoryId(),
+                searchCriteria.getBranchId(),
+                searchCriteria.getDepartmentId()
+        );
     }
 
 }

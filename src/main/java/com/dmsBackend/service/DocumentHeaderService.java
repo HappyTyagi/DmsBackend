@@ -90,7 +90,17 @@ public interface DocumentHeaderService {
     Long countApprovedByBranchId(Integer branch);
     Long countRejectedByBranchId(Integer branch);
 
-    List<DocumentHeader> searchDocuments(String fileNo, String title, String subject, String version, String category);
+    public List<DocumentHeader> searchDocuments(
+            String fileNo,
+            String title,
+            String subject,
+            String version,
+            Integer categoryMaster,
+            Integer branch,
+            Integer department
+    );
 
     List<DocumentHeader> getPendingDocumentsByDepartment(Integer departmentId);
+
+
 }
