@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/Dashboard")
-//@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class DashBoardController {
     @Autowired
     DashboardService dashboardService;

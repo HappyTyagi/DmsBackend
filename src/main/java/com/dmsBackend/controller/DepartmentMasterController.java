@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/DepartmentMaster")
-//@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class DepartmentMasterController {
     @Autowired
     DepartmentMasterService departmentMasterService;

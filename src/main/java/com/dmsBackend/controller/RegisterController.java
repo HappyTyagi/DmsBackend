@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/register")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class RegisterController {
 
     @Autowired
