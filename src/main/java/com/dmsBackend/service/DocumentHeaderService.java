@@ -103,4 +103,14 @@ public interface DocumentHeaderService {
     List<DocumentHeader> getPendingDocumentsByDepartment(Integer departmentId);
 
 
+    List<DocumentHeader> getFilteredDocuments(Integer categoryId, DocApprovalStatus approvalStatus,
+                                              Timestamp startDate, Timestamp endDate,
+                                              Integer branchId, Integer departmentId);
+
+
+//    List<DocumentHeader> getFilteredDocuments(Integer categoryId, DocApprovalStatus approvalStatus,
+//                                              Timestamp createdOn, Integer branchId, Integer departmentId);
+
+
+
 }

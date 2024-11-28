@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.dmsBackend.exception.ResourceConflictException;
 import com.dmsBackend.exception.ResourceNotFoundException;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,8 +34,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.*;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import java.nio.file.Path;
@@ -430,5 +440,41 @@ public class DocumentController {
                 searchCriteria.getDepartmentId()
         );
     }
+
+
+//    @GetMapping("/filter")
+//    public List<DocumentHeader> getFilteredDocuments(
+//            @RequestParam Integer categoryId,
+//            @RequestParam DocApprovalStatus approvalStatus,
+//            @RequestParam(required = false) Timestamp createdOn, // Optional
+//            @RequestParam Integer branchId,
+//            @RequestParam Integer departmentId) {
+//        return documentHeaderService.getFilteredDocuments(categoryId, approvalStatus, createdOn, branchId, departmentId);
+//    }
+
+
+//    @GetMapping("/filter")
+//    public List<DocumentHeader> getFilteredDocuments(
+//            @RequestParam Integer categoryId,
+//            @RequestParam DocApprovalStatus approvalStatus,
+//            @RequestParam(required = false) Timestamp startDate, // Optional
+//            @RequestParam(required = false) Timestamp endDate, // Optional
+//            @RequestParam Integer branchId,
+//            @RequestParam Integer departmentId) {
+//        return documentHeaderService.getFilteredDocuments(categoryId, approvalStatus, startDate, endDate, branchId, departmentId);
+//    }
+
+    @GetMapping("/filter")
+    public List<DocumentHeader> getFilteredDocuments(
+            @RequestParam Integer categoryId,
+            @RequestParam DocApprovalStatus approvalStatus,
+            @RequestParam(required = false) Timestamp startDate, // Optional
+            @RequestParam(required = false) Timestamp endDate, // Optional
+            @RequestParam Integer branchId,
+            @RequestParam Integer departmentId) {
+        return documentHeaderService.getFilteredDocuments(categoryId, approvalStatus, startDate, endDate, branchId, departmentId);
+    }
+
+
 
 }

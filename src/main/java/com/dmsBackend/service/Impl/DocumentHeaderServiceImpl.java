@@ -491,4 +491,21 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
 //    }
 
 
+//    public List<DocumentHeader> getFilteredDocuments(Integer categoryId, DocApprovalStatus approvalStatus,
+//                                                     Timestamp createdOn, Integer branchId, Integer departmentId) {
+//        return documentHeaderRepository.findDocumentsByFilters(categoryId, approvalStatus, createdOn, branchId, departmentId);
+//    }
+
+
+    @Override
+    public List<DocumentHeader> getFilteredDocuments(Integer categoryId, DocApprovalStatus approvalStatus,
+                                                     Timestamp startDate, Timestamp endDate,
+                                                     Integer branchId, Integer departmentId) {
+        return documentHeaderRepository.findDocumentsByFilters(categoryId, approvalStatus, startDate, endDate, branchId, departmentId);
+    }
+
+
+
+
 }
+

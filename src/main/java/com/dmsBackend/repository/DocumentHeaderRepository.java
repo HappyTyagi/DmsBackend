@@ -4,6 +4,7 @@ import com.dmsBackend.entity.BranchMaster;
 import com.dmsBackend.entity.DepartmentMaster;
 import com.dmsBackend.entity.DocApprovalStatus;
 import com.dmsBackend.entity.DocumentHeader;
+import io.micrometer.common.lang.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -128,6 +129,51 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
 
     @Query("SELECT dh FROM DocumentHeader dh WHERE dh.employee.department.id = :departmentId AND dh.approvalStatus = 'PENDING'")
     List<DocumentHeader> findPendingByDepartment(@Param("departmentId") Integer departmentId);
+
+
+
+//    @Query("""
+//       SELECT dh
+//       FROM DocumentHeader dh
+//       JOIN dh.employee e
+//       WHERE dh.categoryMaster.id = :categoryId
+//         AND dh.approvalStatus = :approvalStatus
+//         AND (COALESCE(:createdOn, dh.createdOn) = dh.createdOn OR dh.createdOn >= :createdOn)
+//         AND e.branch.id = :branchId
+//         AND e.department.id = :departmentId
+//       """)
+//    List<DocumentHeader> findDocumentsByFilters(
+//            @Param("categoryId") Integer categoryId,
+//            @Param("approvalStatus") DocApprovalStatus approvalStatus,
+//            @Param("createdOn") Timestamp createdOn,
+//            @Param("branchId") Integer branchId,
+//            @Param("departmentId") Integer departmentId
+//    );
+
+    @Query("""
+       SELECT dh
+       FROM DocumentHeader dh
+       JOIN dh.employee e
+       WHERE dh.categoryMaster.id = :categoryId
+         AND dh.approvalStatus = :approvalStatus
+         AND (dh.createdOn BETWEEN :startDate AND :endDate)
+         AND e.branch.id = :branchId
+         AND e.department.id = :departmentId
+       """)
+    List<DocumentHeader> findDocumentsByFilters(
+            @Param("categoryId") Integer categoryId,
+            @Param("approvalStatus") DocApprovalStatus approvalStatus,
+            @Param("startDate") Timestamp startDate,
+            @Param("endDate") Timestamp endDate,
+            @Param("branchId") Integer branchId,
+            @Param("departmentId") Integer departmentId
+    );
+
+
+
+
+
+
 
 }
 
