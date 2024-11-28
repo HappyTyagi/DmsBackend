@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/CategoryMaster")
-@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
+//@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class CategoryMasterController {
     @Autowired
     private CategoryMasterService categoryMasterService;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/logout")
-@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
+//@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class LogoutController {
     @GetMapping
     public ResponseEntity<?> logoutUser(HttpSession session) {

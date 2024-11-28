@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/uploadFile")
-@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
+//@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class UploadFileController {
 
     @Value("${file.upload-dir:images/}")  // Use property for path, with a default value

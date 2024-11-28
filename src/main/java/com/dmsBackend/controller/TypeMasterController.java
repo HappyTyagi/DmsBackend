@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("TypeMaster")
-@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
+//@CrossOrigin("https://happytyagi.github.io/DmsFrontend/")
 public class TypeMasterController {
     @Autowired
     TypeMasterService typeMasterService;
