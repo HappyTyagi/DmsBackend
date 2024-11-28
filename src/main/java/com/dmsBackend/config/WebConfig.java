@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Allow CORS for all paths
-                .allowedOrigins("https://happytyagi.github.io/DmsFrontend/")
+                .allowedOrigins("*")
                 .allowedOriginPatterns("*")// Adjust to your frontend's URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allow these HTTP methods
                 .allowedHeaders("*")  // Allow all headers
